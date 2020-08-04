@@ -7,18 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.rickandmortycharacters.R
-import com.example.rickandmortycharacters.databinding.FragmentCharacterDetailsBinding
+import com.example.rickandmortycharacters.databinding.FragmentCharacterListBinding
 
-class CharacterDetailsFragment : Fragment() {
+class CharacterListFragment : Fragment() {
 
-    private lateinit var binding: FragmentCharacterDetailsBinding
+    private lateinit var binding: FragmentCharacterListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_character_details, container, false)
+            DataBindingUtil.inflate(inflater, R.layout.fragment_character_list, container, false)
         return binding.root
     }
 }
