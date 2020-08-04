@@ -1,5 +1,6 @@
 package com.example.rickandmortycharacters.util
 
+import com.example.rickandmortycharacters.net.NoInternetConnectionException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -18,6 +19,9 @@ suspend fun <T> safeApiCall(
                     ApiResponseWrapper.NetworkError(throwable.code(), throwable.message)
                 }
                 is IOException -> {
+                    ApiResponseWrapper.GeneralError(throwable.message)
+                }
+                is NoInternetConnectionException -> {
                     ApiResponseWrapper.GeneralError(throwable.message)
                 }
                 else -> {

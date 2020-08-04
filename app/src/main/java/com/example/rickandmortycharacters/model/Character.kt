@@ -1,8 +1,11 @@
 package com.example.rickandmortycharacters.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Character(
     @SerializedName("created")
     val created: String?,
@@ -28,4 +31,4 @@ data class Character(
     val type: String?,
     @SerializedName("url")
     val url: String?
-)
+) : Parcelable

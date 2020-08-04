@@ -1,4 +1,3 @@
 package com.example.rickandmortycharacters.model
 
-data class ApiResponse(private val info: Info, private val results: List<Character>) {
-}
+data class ApiResponse(val info: Info, val results: List<Character>)
