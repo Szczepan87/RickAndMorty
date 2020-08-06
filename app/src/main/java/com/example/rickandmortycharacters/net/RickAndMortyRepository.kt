@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.rickandmortycharacters.model.Character
 import com.example.rickandmortycharacters.model.Info
 import com.example.rickandmortycharacters.util.ApiResponseWrapper
+import com.example.rickandmortycharacters.util.DEFAULT_INFO
 import com.example.rickandmortycharacters.util.safeApiCall
 import kotlinx.coroutines.Dispatchers
 
@@ -30,18 +31,23 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
         }
 
         var list: List<Character> = emptyList()
+        var info: Info = DEFAULT_INFO
 
         when (response) {
             is ApiResponseWrapper.Success -> {
                 list = response.value.await().body()?.results ?: emptyList()
+                info = response.value.await().body()?.info ?: DEFAULT_INFO
+                _repositoryError.postValue(null)
+
             }
             is ApiResponseWrapper.GeneralError -> {
-                // TODO post an error
+                _repositoryError.postValue(response.errorMessage)
             }
             is ApiResponseWrapper.NetworkError -> {
-                // TODO post an error
+                _repositoryError.postValue(response.errorMessage)
             }
         }
         _characterList.postValue(list)
+        _info.postValue(info)
     }
 }
