@@ -1,6 +1,8 @@
 package com.example.rickandmortycharacters.net
 
-class NoInternetConnectionException : Exception() {
+import java.io.IOException
+
+class NoInternetConnectionException : IOException() {
     override val message: String?
         get() = "No Internet connection!"
 }

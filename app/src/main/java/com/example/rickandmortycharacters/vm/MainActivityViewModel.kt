@@ -1,6 +1,5 @@
 package com.example.rickandmortycharacters.vm
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,14 +11,11 @@ import kotlinx.coroutines.launch
 class MainActivityViewModel(private val repository: RickAndMortyRepository) : ViewModel() {
 
     private val _currentPage = MutableLiveData<Int>(0)
-    val currentPage: LiveData<Int>
-        get() = _currentPage
 
     private val _charactersListOnPage = MutableLiveData<List<Character>>()
     val charactersListOnPage: LiveData<List<Character>>
         get() = _charactersListOnPage
 
-    // TODO save recycler position
     private val _dataRetrievalError = MutableLiveData<String?>().apply {
         value = null
     }
@@ -28,14 +24,14 @@ class MainActivityViewModel(private val repository: RickAndMortyRepository) : Vi
 
     init {
         repository.characterList.observeForever { _charactersListOnPage.postValue(it) }
+        repository.repositoryError.observeForever { _dataRetrievalError.postValue(it) }
         downloadNextCharacterPage()
     }
 
     fun downloadNextCharacterPage() {
         viewModelScope.launch {
-            Log.d("VIEW MODEL", "Page to download: ${currentPage.value}")
-            repository.retrieveCharacterPage(currentPage.value ?: 0)
-            _currentPage.postValue(currentPage.value?.plus(1))
+            repository.retrieveCharacterPage(_currentPage.value ?: 0)
+            _currentPage.postValue(_currentPage.value?.plus(1))
         }
     }
 }

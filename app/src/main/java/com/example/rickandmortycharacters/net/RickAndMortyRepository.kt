@@ -1,12 +1,9 @@
 package com.example.rickandmortycharacters.net
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rickandmortycharacters.model.Character
-import com.example.rickandmortycharacters.model.Info
 import com.example.rickandmortycharacters.util.ApiResponseWrapper
-import com.example.rickandmortycharacters.util.DEFAULT_INFO
 import com.example.rickandmortycharacters.util.safeApiCall
 import kotlinx.coroutines.Dispatchers
 
@@ -15,10 +12,6 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
     private val _characterList = MutableLiveData<List<Character>>()
     val characterList: LiveData<List<Character>>
         get() = _characterList
-
-    private val _info = MutableLiveData<Info>()
-    val info: LiveData<Info>
-        get() = _info
 
     private val _repositoryError = MutableLiveData<String?>().apply {
         value = null
@@ -32,13 +25,10 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
         }
 
         var list: List<Character> = emptyList()
-        var info: Info = DEFAULT_INFO
 
         when (response) {
             is ApiResponseWrapper.Success -> {
                 list = response.value.await().body()?.results ?: emptyList()
-                Log.d("REPOSITORY", "List: $list")
-                info = response.value.await().body()?.info ?: DEFAULT_INFO
                 _repositoryError.postValue(null)
                 _characterList.postValue(list)
             }
@@ -46,9 +36,8 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
                 _repositoryError.postValue(response.errorMessage)
             }
             is ApiResponseWrapper.NetworkError -> {
-                _repositoryError.postValue(response.errorMessage)
+                _repositoryError.postValue("${response.code} ${response.errorMessage}")
             }
         }
-        _info.postValue(info)
     }
 }

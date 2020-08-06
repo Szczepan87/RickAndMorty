@@ -43,6 +43,5 @@ class CharacterListRecyclerAdapter :
                 onItemClickListener?.invoke(characterItem)
             }
         }
-
     }
 }
