@@ -11,6 +11,7 @@ class CharacterListRecyclerAdapter :
     RecyclerView.Adapter<CharacterListRecyclerAdapter.CharacterViewHolder>() {
 
     private val charactersList = mutableListOf<Character>()
+    var onItemClickListener: ((Character) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -34,6 +35,9 @@ class CharacterListRecyclerAdapter :
 
         fun bind(characterItem: Character) {
             binding.character = characterItem
+            binding.characterCardConstraintLayout.setOnClickListener {
+                onItemClickListener?.invoke(characterItem)
+            }
         }
 
     }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.rickandmortycharacters.R
 import com.example.rickandmortycharacters.databinding.FragmentCharacterListBinding
 import com.example.rickandmortycharacters.util.CharacterListRecyclerAdapter
@@ -37,6 +38,11 @@ class CharacterListFragment : Fragment() {
 
         viewModel.downloadNextCharacterPage()
         binding.characterListRecyclerView.adapter = characterListRecyclerAdapter
+        characterListRecyclerAdapter.onItemClickListener = {
+            val action = CharacterListFragmentDirections
+                .actionCharacterListFragmentToCharacterDetailsFragment(it)
+            findNavController().navigate(action)
+        }
         // TODO set recyclerview adapter
 
         // TODO trigger loading data when scrolled down (inject VM to recycler?)
