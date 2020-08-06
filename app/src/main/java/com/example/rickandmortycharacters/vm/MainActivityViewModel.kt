@@ -1,8 +1,10 @@
 package com.example.rickandmortycharacters.vm
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.rickandmortycharacters.model.Character
-import com.example.rickandmortycharacters.model.Info
 import com.example.rickandmortycharacters.net.RickAndMortyRepository
 import kotlinx.coroutines.launch
 
@@ -26,24 +28,12 @@ class MainActivityViewModel(private val repository: RickAndMortyRepository) : Vi
     val dataRetrievalError: LiveData<String?>
         get() = _dataRetrievalError
 
-    private val newCharactersListObserver =
-        Observer<List<Character>> { _charactersListOnPage.postValue(it) }
-    private val newPageObserver =
-        Observer<Info> { _currentPage.postValue(currentPage.value?.plus(1)) }
-
     init {
-        repository.characterList.observeForever { newCharactersListObserver }
-        repository.info.observeForever { newPageObserver }
+        repository.characterList.observeForever { _charactersListOnPage.postValue(it) }
+        repository.info.observeForever { _currentPage.postValue(currentPage.value?.plus(1)) }
     }
 
     fun downloadNextCharacterPage() {
         viewModelScope.launch { repository.retrieveCharacterPage(currentPage.value ?: 0) }
-    }
-
-    override fun onCleared() {
-        repository.characterList.removeObserver(newCharactersListObserver)
-        repository.info.observeForever(newPageObserver)
-
-        super.onCleared()
     }
 }

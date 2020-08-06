@@ -1,5 +1,6 @@
 package com.example.rickandmortycharacters.net
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.rickandmortycharacters.model.Character
@@ -29,6 +30,7 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
         val response = safeApiCall(Dispatchers.IO) {
             api.getCharactersByPage(pageNo)
         }
+        Log.d("REPOSITORY", "Character page: $response")
 
         var list: List<Character> = emptyList()
         var info: Info = DEFAULT_INFO
@@ -36,9 +38,10 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
         when (response) {
             is ApiResponseWrapper.Success -> {
                 list = response.value.await().body()?.results ?: emptyList()
+                Log.d("REPOSITORY", "List: $list")
                 info = response.value.await().body()?.info ?: DEFAULT_INFO
                 _repositoryError.postValue(null)
-
+                _characterList.postValue(list)
             }
             is ApiResponseWrapper.GeneralError -> {
                 _repositoryError.postValue(response.errorMessage)
@@ -47,7 +50,6 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
                 _repositoryError.postValue(response.errorMessage)
             }
         }
-        _characterList.postValue(list)
         _info.postValue(info)
     }
 }

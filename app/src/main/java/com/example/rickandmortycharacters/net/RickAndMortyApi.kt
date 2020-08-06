@@ -8,6 +8,6 @@ import retrofit2.http.Query
 
 interface RickAndMortyApi {
 
-    @GET
+    @GET("character")
     fun getCharactersByPage(@Query("page") page: Int): Deferred<Response<ApiResponse>>
 }
