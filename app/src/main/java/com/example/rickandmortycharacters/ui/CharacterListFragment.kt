@@ -1,6 +1,7 @@
 package com.example.rickandmortycharacters.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,15 +36,20 @@ class CharacterListFragment : Fragment() {
         viewModel.charactersListOnPage.observe(viewLifecycleOwner, Observer {
             characterListRecyclerAdapter.addListOfCharacters(it)
         })
+        viewModel.currentPage.observe(
+            viewLifecycleOwner,
+            Observer { Log.d("LIST FRAGMENT", "Page: $it") })
 
-        viewModel.downloadNextCharacterPage()
         binding.characterListRecyclerView.adapter = characterListRecyclerAdapter
+
         characterListRecyclerAdapter.onItemClickListener = {
             val action = CharacterListFragmentDirections
                 .actionCharacterListFragmentToCharacterDetailsFragment(it)
             findNavController().navigate(action)
         }
-        // TODO set recyclerview adapter
+        characterListRecyclerAdapter.onBottomReachedListener = {
+            viewModel.downloadNextCharacterPage()
+        }
 
         // TODO trigger loading data when scrolled down (inject VM to recycler?)
     }

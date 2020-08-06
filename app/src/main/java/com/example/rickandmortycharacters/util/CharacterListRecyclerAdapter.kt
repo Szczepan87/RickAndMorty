@@ -12,6 +12,7 @@ class CharacterListRecyclerAdapter :
 
     private val charactersList = mutableListOf<Character>()
     var onItemClickListener: ((Character) -> Unit)? = null
+    var onBottomReachedListener: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,6 +23,9 @@ class CharacterListRecyclerAdapter :
     override fun getItemCount(): Int = charactersList.size
 
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
+        if (position == charactersList.size.minus(1)) {
+            onBottomReachedListener?.invoke()
+        }
         holder.bind(charactersList[position])
     }
 

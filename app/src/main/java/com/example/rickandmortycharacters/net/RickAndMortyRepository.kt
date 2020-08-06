@@ -30,7 +30,6 @@ class RickAndMortyRepository(private val api: RickAndMortyApi) {
         val response = safeApiCall(Dispatchers.IO) {
             api.getCharactersByPage(pageNo)
         }
-        Log.d("REPOSITORY", "Character page: $response")
 
         var list: List<Character> = emptyList()
         var info: Info = DEFAULT_INFO

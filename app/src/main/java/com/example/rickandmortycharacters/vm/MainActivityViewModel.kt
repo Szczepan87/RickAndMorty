@@ -1,5 +1,6 @@
 package com.example.rickandmortycharacters.vm
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,10 +19,7 @@ class MainActivityViewModel(private val repository: RickAndMortyRepository) : Vi
     val charactersListOnPage: LiveData<List<Character>>
         get() = _charactersListOnPage
 
-    private val _downloadedCharactersList = MutableLiveData<List<Character>>()
-    val downloadedCharactersList: LiveData<List<Character>>
-        get() = _downloadedCharactersList
-
+    // TODO save recycler position
     private val _dataRetrievalError = MutableLiveData<String?>().apply {
         value = null
     }
@@ -30,10 +28,14 @@ class MainActivityViewModel(private val repository: RickAndMortyRepository) : Vi
 
     init {
         repository.characterList.observeForever { _charactersListOnPage.postValue(it) }
-        repository.info.observeForever { _currentPage.postValue(currentPage.value?.plus(1)) }
+        downloadNextCharacterPage()
     }
 
     fun downloadNextCharacterPage() {
-        viewModelScope.launch { repository.retrieveCharacterPage(currentPage.value ?: 0) }
+        viewModelScope.launch {
+            Log.d("VIEW MODEL", "Page to download: ${currentPage.value}")
+            repository.retrieveCharacterPage(currentPage.value ?: 0)
+            _currentPage.postValue(currentPage.value?.plus(1))
+        }
     }
 }
